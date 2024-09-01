@@ -14,17 +14,18 @@ namespace NightmareStandalone.HarmonyPatches
     class GameNoteControllerHandleCut
     {
 
-        public static bool Prefix(GameNoteController __instance, ref Transform ____noteTransform, ref Saber saber, ref Vector3 cutPoint, ref Quaternion orientation, ref Vector3 cutDirVec, ref bool allowBadCut, AudioTimeSyncController ____audioTimeSyncController, ref float ____cutAngleTolerance)
+        public static void Prefix(GameNoteController __instance, ref Transform ____noteTransform, ref Saber saber, ref Vector3 cutPoint, ref Quaternion orientation, ref Vector3 cutDirVec, ref bool allowBadCut, AudioTimeSyncController ____audioTimeSyncController, ref float ____cutAngleTolerance)
         {
-            if (!Plugin.Safe()) return true;
+            if (!Plugin.Safe()) 
+                return;
             try
             {
-                float timeDeviation = __instance.noteData.time - ____audioTimeSyncController.songTime;
-                bool directionOK;
-                bool speedOK;
-                bool saberTypeOK;
-                float cutDirDeviation;
-                float cutDirAngle;
+                //float timeDeviation = __instance.noteData.time - ____audioTimeSyncController.songTime;
+                //bool directionOK;
+                //bool speedOK;
+                //bool saberTypeOK;
+                //float cutDirDeviation;
+                //float cutDirAngle;
                 NoteBehaviour behaviour = NoteBehaviour.GetNoteBehaviour(__instance);
                 if (behaviour != null)
                 {
@@ -39,10 +40,10 @@ namespace NightmareStandalone.HarmonyPatches
                     NoteBasicCutInfoSOGetBasicCutInfo.colorCheck = NoteBehaviour.NoteColourBehaviour.NORMAL;
                 }
 
-                NoteBasicCutInfoSOGetBasicCutInfo.saberDeflectionAngle = saber.transform.forward;
-                NoteBasicCutInfoHelper.GetBasicCutInfo(__instance.noteTransform, __instance.noteData.colorType, __instance.noteData.cutDirection, 
-                    saber.saberType, saber.bladeSpeed, cutDirVec, ____cutAngleTolerance, out directionOK, out speedOK, out saberTypeOK, out cutDirDeviation, out cutDirAngle);
-                NoteBasicCutInfoSOGetBasicCutInfo.checkMechanic = NoteBehaviour.NoteCutBehaviour.NORMAL;
+                //NoteBasicCutInfoSOGetBasicCutInfo.saberDeflectionAngle = saber.transform.forward;
+                //NoteBasicCutInfoHelper.GetBasicCutInfo(__instance.noteTransform, __instance.noteData.colorType, __instance.noteData.cutDirection, 
+                //    saber.saberType, saber.bladeSpeed, cutDirVec, ____cutAngleTolerance, out directionOK, out speedOK, out saberTypeOK, out cutDirDeviation, out cutDirAngle);
+                //NoteBasicCutInfoSOGetBasicCutInfo.checkMechanic = NoteBehaviour.NoteCutBehaviour.NORMAL;
                 /*
                 if (chroma != null)
                 {
@@ -54,32 +55,33 @@ namespace NightmareStandalone.HarmonyPatches
                     }
                 }
                 */
-                if (!allowBadCut)
-                {
-                    return false;
-                }
-                Vector3 vector = orientation * Vector3.up;
-                Plane plane = new Plane(vector, cutPoint);
-                float cutDistanceToCenter = Mathf.Abs(plane.GetDistanceToPoint(__instance.noteTransform.position));
-                Quaternion worldRotation = __instance.worldRotation;
-                Quaternion inverseWorldRotation = __instance.inverseWorldRotation;
-                NoteCutInfo noteCutInfo = new NoteCutInfo(__instance.noteData, speedOK, directionOK, saberTypeOK, 
-                    false, saber.bladeSpeed, cutDirVec, saber.saberType, timeDeviation,
-                    cutDirDeviation, plane.ClosestPointOnPlane(__instance.transform.position), vector, 
-                    cutDistanceToCenter, cutDirAngle, worldRotation, inverseWorldRotation, ____noteTransform.rotation, ____noteTransform.position, saber.movementData);
 
-                var bigCut = __instance.GetField<BoxCuttableBySaber[], GameNoteController>("_bigCuttableBySaberList");
-                var smallCut = __instance.GetField<BoxCuttableBySaber[], GameNoteController>("_smallCuttableBySaberList");
-                foreach (var box in bigCut)
-                    box.canBeCut = false;
-                foreach (var box in smallCut)
-                    box.canBeCut = false;
-                ReflectionUtil.InvokeMethod<object, NoteController> (__instance, "SendNoteWasCutEvent", noteCutInfo);
+                //if (!allowBadCut)
+                //{
+                //    return false;
+                //}
+                //Vector3 vector = orientation * Vector3.up;
+                //Plane plane = new Plane(vector, cutPoint);
+                //float cutDistanceToCenter = Mathf.Abs(plane.GetDistanceToPoint(__instance.noteTransform.position));
+                //Quaternion worldRotation = __instance.worldRotation;
+                //Quaternion inverseWorldRotation = __instance.inverseWorldRotation;
+                //NoteCutInfo noteCutInfo = new NoteCutInfo(__instance.noteData, speedOK, directionOK, saberTypeOK, 
+                //    false, saber.bladeSpeed, cutDirVec, saber.saberType, timeDeviation,
+                //    cutDirDeviation, plane.ClosestPointOnPlane(__instance.transform.position), vector, 
+                //    cutDistanceToCenter, cutDirAngle, worldRotation, inverseWorldRotation, ____noteTransform.rotation, ____noteTransform.position, saber.movementData);
 
-          //      ChromaSaber chromaSaber = ChromaSaber.GetChromaSaber(saber);
+                //var bigCut = __instance.GetField<BoxCuttableBySaber[], GameNoteController>("_bigCuttableBySaberList");
+                //var smallCut = __instance.GetField<BoxCuttableBySaber[], GameNoteController>("_smallCuttableBySaberList");
+                //foreach (var box in bigCut)
+                //    box.canBeCut = false;
+                //foreach (var box in smallCut)
+                //    box.canBeCut = false;
+                //ReflectionUtil.InvokeMethod<object, NoteController> (__instance, "SendNoteWasCutEvent", noteCutInfo);
+
+                //      ChromaSaber chromaSaber = ChromaSaber.GetChromaSaber(saber);
                 //if (chromaSaber != null) chromaSaber.NoteWasCut(__instance);
 
-
+                return;
             }
             catch (Exception e)
             {
@@ -87,7 +89,7 @@ namespace NightmareStandalone.HarmonyPatches
                 Logger.log.Error(e);
             }
 
-            return false;
+            //return false;
         }
 
         /*static void Postfix(GameNoteController __instance, Saber saber) {

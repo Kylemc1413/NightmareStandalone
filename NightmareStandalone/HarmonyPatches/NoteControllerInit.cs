@@ -15,7 +15,8 @@ namespace NightmareStandalone.HarmonyPatches
 
         static void Postfix(NoteController __instance, NoteData ____noteData)
         {
-            if (!Plugin.Safe()) return;
+            if (!Plugin.Safe()) 
+                return;
             __instance.noteTransform.localScale = Vector3.one /*__instance.noteTransform.localScale*/ * NoteScaling.GetNoteScale(____noteData); //ChromaNoteScaleEvent.GetScale(____noteData.time);
         }
     }

@@ -19,7 +19,8 @@ namespace NightmareStandalone.HarmonyPatches
     {
         static void Postfix(ColorNoteVisuals __instance, NoteControllerBase noteController, MeshRenderer[] ____arrowMeshRenderers, MeshRenderer[] ____circleMeshRenderers, MaterialPropertyBlockController[] ____materialPropertyBlockControllers, ref ColorManager ____colorManager)
         {
-            if (!Plugin.Safe()) return;
+            if (!Plugin.Safe())
+                return;
             ColorNoteVisualsExtensions.CNVDisplayType displayType = ColorNoteVisualsExtensions.CNVDisplayType.NORMAL;
             NoteBehaviour noteBehaviour = NoteBehaviour.GetNoteBehaviour(noteController, true);
             if (noteBehaviour != null)
