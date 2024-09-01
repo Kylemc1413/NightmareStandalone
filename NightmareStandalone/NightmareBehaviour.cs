@@ -111,12 +111,13 @@ namespace NightmareStandalone
          *************** LOGIC ****************
          *************************************/
 
-        float nightmareScale = 0.7f;
+        private static float _baseNightmareScale = 1.0f;
+        float nightmareScale = _baseNightmareScale;
 
 
         void ResetNightmare()
         {
-            nightmareScale = 0.7f;
+            nightmareScale = _baseNightmareScale;
         }
 
         void OnEnable()
@@ -159,7 +160,7 @@ namespace NightmareStandalone
             {
                 if (noteCutInfo.allIsOK)
                 {
-                    nightmareScale = Mathf.Min(nightmareScale + 0.08f, 0.8f);
+                    nightmareScale = Mathf.Min(nightmareScale + 0.08f, _baseNightmareScale);
                     Triggers.TriggerController.Instance.Trigger(Triggers.Trigger.NOTE_CUT_MONOCHROME, GameMode.GameModeController.GetSelectedGameMode(), noteController, behaviour);
                 }
                 else
