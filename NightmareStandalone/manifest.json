@@ -1,0 +1,16 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/nike4613/ModSaber-MetadataFileSchema/master/Schema.json",
+  "author": "Kyle1413",
+  "description": "A standalone version of the nightmare gamemode from SkyKiwi's Chromatoggle mod",
+  "gameVersion": "1.21.0",
+  "id": "NightmareStandalone",
+  "name": "NightmareStandalone",
+  "version": "0.1.0",
+  "dependsOn": {
+    "BSIPA": "^4.1.3",
+    "BeatSaberMarkupLanguage": "^1.4.0",
+    "BS Utils": "^1.4.0",
+    "SiraUtil": "^3.0.0"
+  },
+  "features": []
+}
