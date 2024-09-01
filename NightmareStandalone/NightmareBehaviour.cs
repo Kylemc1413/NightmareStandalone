@@ -111,7 +111,7 @@ namespace NightmareStandalone
          *************** LOGIC ****************
          *************************************/
 
-        private static float _baseNightmareScale = 1.0f;
+        private static float _baseNightmareScale = 0.8f;
         float nightmareScale = _baseNightmareScale;
 
 
