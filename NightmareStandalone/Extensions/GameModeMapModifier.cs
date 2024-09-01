@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using System.Threading.Tasks;
+using IPA.Utilities;
 namespace NightmareStandalone.Extensions
 {
     class GameModeMapModifier
@@ -144,7 +145,7 @@ namespace NightmareStandalone.Extensions
                             }
 
                             if (mode.mapOptions.mirrorColour) note.SwitchNoteColorType();
-                            if (mode.mapOptions.mirrorDirection && note.time > 1) note.ChangeNoteCutDirection(note.cutDirection.OppositeDirection());
+                            if (mode.mapOptions.mirrorDirection && note.time > 1) note.ChangeNoteCutDirection(note.cutDirection.Opposite());
                             if (mode.mapOptions.mirrorPosition && note.time > 1) note.Mirror(4);
 
                             if (mode.randomizationOptions.randomDotsChance > 0 && !customBeatmap.isTailored)
@@ -159,14 +160,14 @@ namespace NightmareStandalone.Extensions
                                 {
                                     note.SwitchNoteColorType();
                                     note.Mirror(4);
-                                    note.ChangeNoteCutDirection(note.cutDirection.OppositeDirection());
+                                    note.ChangeNoteCutDirection(note.cutDirection.Opposite());
                                 }
                             }
 
                             if (mode.randomizationOptions.randomMirrorDirectionChance > 0 && !customBeatmap.isTailored)
                             {
                                 System.Random mirrorDirectionRandom = new System.Random((randSeed + 8) * 2 * Mathf.FloorToInt(note.time));
-                                if (mirrorDirectionRandom.NextDouble() < mode.randomizationOptions.randomMirrorDirectionChance) note.ChangeNoteCutDirection(note.cutDirection.OppositeDirection());
+                                if (mirrorDirectionRandom.NextDouble() < mode.randomizationOptions.randomMirrorDirectionChance) note.ChangeNoteCutDirection(note.cutDirection.Opposite());
                             }
                             if (mode.randomizationOptions.randomMirrorPositionChance > 0 && !customBeatmap.isTailored && note.time > 1)
                             {
@@ -375,7 +376,7 @@ namespace NightmareStandalone.Extensions
                             {
                                 if (bidirectionalRandom.NextDouble() < mode.randomizationOptions.randomBidirectionalChance && !(note.cutDirection == NoteCutDirection.Any))
                                 {
-                                   // behaviour = ApplyBidirectionalCut(co as CustomBeatmapNote);
+                                    //behaviour = ApplyBidirectionalCut(co as CustomBeatmapNote);
                                 }
                             }
 

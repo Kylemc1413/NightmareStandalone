@@ -11,6 +11,7 @@ using IPALogger = IPA.Logging.Logger;
 using HarmonyLib;
 using System.IO;
 using NightmareStandalone.Extensions;
+using IPA.Utilities;
 namespace NightmareStandalone
 {
     [Plugin(RuntimeOptions.SingleStartInit)]
@@ -60,7 +61,7 @@ namespace NightmareStandalone
             yield return new WaitForSeconds(0.1f);
 
             var callbackController = Resources.FindObjectsOfTypeAll<BeatmapObjectSpawnController>().LastOrDefault().GetField<BeatmapCallbacksController, BeatmapObjectSpawnController>("_beatmapCallbacksController");
-            var thedata = callbackController.GetField<IReadonlyBeatmapData>("_beatmapData");
+            var thedata = callbackController.GetField<IReadonlyBeatmapData, BeatmapCallbacksController>("_beatmapData");
             if (callbackController == null) Debug.Log("null callback");
 
             var customData = Extensions.MapModifier.CreateTransformedBeatmapData(thedata,

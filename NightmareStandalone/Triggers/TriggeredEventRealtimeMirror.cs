@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using IPA.Utilities;
 namespace NightmareStandalone.Triggers
 {
     public class TriggeredEventRealtimeMirror : TriggeredEvent
@@ -20,7 +21,7 @@ namespace NightmareStandalone.Triggers
             NoteJump[] movers = Resources.FindObjectsOfTypeAll<NoteJump>();
             foreach (NoteJump mover in movers)
             {
-                Vector3 endPos = mover.GetField<Vector3>("_endPos");
+                Vector3 endPos = mover.GetField<Vector3, NoteJump>("_endPos");
                 endPos.x = -endPos.x;
                 mover.SetField("_endPos", endPos);
             }

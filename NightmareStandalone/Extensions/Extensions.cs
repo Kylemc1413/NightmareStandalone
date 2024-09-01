@@ -243,8 +243,8 @@ namespace NightmareStandalone.Extensions
                     return;
                 }
             }
-            MeshRenderer omr = cnv.GetField<MeshRenderer>("_arrowMeshRenderer");
-            SpriteRenderer osr = cnv.GetField<SpriteRenderer>("_arrowGlowSpriteRenderer");
+            MeshRenderer omr = cnv.GetField<MeshRenderer, ColorNoteVisuals>("_arrowMeshRenderer");
+            SpriteRenderer osr = cnv.GetField<SpriteRenderer, ColorNoteVisuals>("_arrowGlowSpriteRenderer");
 
             Transform flipper = new GameObject("Reverse Arrow Parent").transform;
             flipper.SetParent(omr.transform.parent);

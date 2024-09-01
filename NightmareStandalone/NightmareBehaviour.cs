@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
 using NightmareStandalone.Extensions;
+using IPA.Utilities;
 namespace NightmareStandalone
 {
     class NightmareBehaviour : MonoBehaviour
@@ -90,7 +91,7 @@ namespace NightmareStandalone
         public BeatmapObjectManager objectManager;
         public void Setup()
         {
-            objectManager = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault()?.GetField<BeatmapObjectManager>("_beatmapObjectManager");
+            objectManager = Resources.FindObjectsOfTypeAll<GameEnergyCounter>().FirstOrDefault()?.GetField<BeatmapObjectManager, GameEnergyCounter>("_beatmapObjectManager");
             if (objectManager == null)
             {
                 Debug.Log("Null manager");
@@ -148,7 +149,7 @@ namespace NightmareStandalone
         public void NightmareBarrierSpawnedEvent(ref StretchableObstacle stretchableObstacle, ref BeatmapObjectManager obstacleSpawnController, ref ObstacleController obstacleController, ref bool didRecolour)
         {
             didRecolour = true;
-            ReflectionUtil.GetField<StretchableCube>(stretchableObstacle, "_stretchableCore").gameObject.SetActive(false);
+            ReflectionUtil.GetField<StretchableCube, StretchableObstacle>(stretchableObstacle, "_stretchableCore").gameObject.SetActive(false);
         }
 
         public void NightmareNoteWasCutEvent(NoteController noteController, in NoteCutInfo noteCutInfo)

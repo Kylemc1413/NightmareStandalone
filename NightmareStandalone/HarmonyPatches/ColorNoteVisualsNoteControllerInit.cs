@@ -8,6 +8,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using NightmareStandalone.Extensions;
 using SiraUtil.Interfaces;
+using IPA.Utilities;
+
 namespace NightmareStandalone.HarmonyPatches
 {
     [HarmonyPriority(Priority.High)]
@@ -15,7 +17,7 @@ namespace NightmareStandalone.HarmonyPatches
     [HarmonyPatch("HandleNoteControllerDidInit")]
     class ColorNoteVisualsHandleNoteControllerDidInitEvent
     {
-        static void Postfix(ColorNoteVisuals __instance, NoteControllerBase noteController, MeshRenderer[] ____arrowMeshRenderers, MeshRenderer[] ____circleMeshRenderers, MaterialPropertyBlockController[] ____materialPropertyBlockControllers, int ____colorId, ref ColorManager ____colorManager)
+        static void Postfix(ColorNoteVisuals __instance, NoteControllerBase noteController, MeshRenderer[] ____arrowMeshRenderers, MeshRenderer[] ____circleMeshRenderers, MaterialPropertyBlockController[] ____materialPropertyBlockControllers, ref ColorManager ____colorManager)
         {
             if (!Plugin.Safe()) return;
             ColorNoteVisualsExtensions.CNVDisplayType displayType = ColorNoteVisualsExtensions.CNVDisplayType.NORMAL;
@@ -55,16 +57,17 @@ namespace NightmareStandalone.HarmonyPatches
 
         }
 
+        private static readonly int _colorId = Shader.PropertyToID("_Color");
         public static void SetNoteColour(ColorNoteVisuals noteVis, Color c)
         {
         //    SpriteRenderer ____arrowGlowSpriteRenderer = noteVis.GetField<SpriteRenderer>("_arrowGlowSpriteRenderer");
           //  SpriteRenderer ____circleGlowSpriteRenderer = noteVis.GetField<SpriteRenderer>("_circleGlowSpriteRenderer");
-            MaterialPropertyBlockController[] ____materialPropertyBlockController = noteVis.GetField<MaterialPropertyBlockController[]>("_materialPropertyBlockControllers");
+            MaterialPropertyBlockController[] ____materialPropertyBlockController = noteVis.GetField<MaterialPropertyBlockController[], ColorNoteVisuals>("_materialPropertyBlockControllers");
 //            if (____arrowGlowSpriteRenderer != null) ____arrowGlowSpriteRenderer.color = c;
 //            if (____circleGlowSpriteRenderer != null) ____circleGlowSpriteRenderer.color = c;
             foreach(var block in ____materialPropertyBlockController)
             {
-                block.materialPropertyBlock.SetColor(noteVis.GetField<int>("_colorId"), c);
+                block.materialPropertyBlock.SetColor(_colorId, c);
                 block.ApplyChanges();
             }
 

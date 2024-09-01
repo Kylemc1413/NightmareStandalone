@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using HarmonyLib;
 using NightmareStandalone.Extensions;
+using IPA.Utilities;
 namespace NightmareStandalone.HarmonyPatches
 {
     [HarmonyPatch(typeof(GameNoteController))]
@@ -67,9 +68,13 @@ namespace NightmareStandalone.HarmonyPatches
                     cutDirDeviation, plane.ClosestPointOnPlane(__instance.transform.position), vector, 
                     cutDistanceToCenter, cutDirAngle, worldRotation, inverseWorldRotation, ____noteTransform.rotation, ____noteTransform.position, saber.movementData);
 
-                __instance.GetField<BoxCuttableBySaber>("_bigCuttableBySaber").canBeCut = false;
-                __instance.GetField<BoxCuttableBySaber>("_smallCuttableBySaber").canBeCut = false;
-                ReflectionUtil.InvokeMethod(__instance, "SendNoteWasCutEvent", noteCutInfo);
+                var bigCut = __instance.GetField<BoxCuttableBySaber[], GameNoteController>("_bigCuttableBySaberList");
+                var smallCut = __instance.GetField<BoxCuttableBySaber[], GameNoteController>("_smallCuttableBySaberList");
+                foreach (var box in bigCut)
+                    box.canBeCut = false;
+                foreach (var box in smallCut)
+                    box.canBeCut = false;
+                ReflectionUtil.InvokeMethod<object, NoteController> (__instance, "SendNoteWasCutEvent", noteCutInfo);
 
           //      ChromaSaber chromaSaber = ChromaSaber.GetChromaSaber(saber);
                 //if (chromaSaber != null) chromaSaber.NoteWasCut(__instance);
