@@ -376,7 +376,7 @@ namespace NightmareStandalone.Extensions
                             {
                                 if (bidirectionalRandom.NextDouble() < mode.randomizationOptions.randomBidirectionalChance && !(note.cutDirection == NoteCutDirection.Any))
                                 {
-                                    //behaviour = ApplyBidirectionalCut(co as CustomBeatmapNote);
+                                    behaviour = ApplyBidirectionalCut(co as CustomBeatmapNote);
                                 }
                             }
 

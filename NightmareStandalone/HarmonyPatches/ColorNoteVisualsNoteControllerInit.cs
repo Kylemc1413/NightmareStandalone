@@ -40,7 +40,7 @@ namespace NightmareStandalone.HarmonyPatches
                     var colorable = noteController.gameObject.GetComponent<IColorable>();
                     if (colorable != null)
                         colorable.Color = c;
-                //    __instance.SetDisplayType(c != Color.clear ? c : Color.white, ____circleGlowSpriteRenderer, displayType, ____noteController.noteData.cutDirection);
+                    __instance.SetDisplayType(c != Color.clear ? c : Color.white, /*____circleGlowSpriteRenderer*/null, displayType, noteController.noteData.cutDirection);
 
                 }
                 catch (Exception e)
@@ -51,8 +51,8 @@ namespace NightmareStandalone.HarmonyPatches
             else
             {
                 Color c = ____colorManager.ColorForType(noteController.noteData.colorType);
-           //     SetNoteColour(__instance, c);
-       //         __instance.SetDisplayType(c, ____circleGlowSpriteRenderer, ColorNoteVisualsExtensions.CNVDisplayType.NORMAL, ____noteController.noteData.cutDirection);
+                SetNoteColour(__instance, c);
+                __instance.SetDisplayType(c, /*____circleGlowSpriteRenderer*/null, ColorNoteVisualsExtensions.CNVDisplayType.NORMAL, noteController.noteData.cutDirection);
             }
 
 

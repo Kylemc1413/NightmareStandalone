@@ -21,7 +21,7 @@ namespace NightmareStandalone.Extensions
 
         private static Sprite dotSprite;
 
-        public static void SetDotVisible(this ColorNoteVisuals cnv, SpriteRenderer dotRenderer, bool show)
+        public static void SetDotVisible(this ColorNoteVisuals cnv, SpriteRenderer? dotRenderer, bool show)
         {
             /*if (dotSprite == null) dotSprite = dotRenderer.sprite;
             if (UnityEngine.Random.value < 0.001f) dotRenderer.sprite = CMBSprite;
@@ -49,7 +49,7 @@ namespace NightmareStandalone.Extensions
         //private const string deflectSpriteString = "";
         //private static Sprite deflectSprite;
 
-        public static void SetDisplayType(this ColorNoteVisuals cnv, Color color, SpriteRenderer dotRenderer, CNVDisplayType type, NoteCutDirection dir)
+        public static void SetDisplayType(this ColorNoteVisuals cnv, Color color, SpriteRenderer? dotRenderer, CNVDisplayType type, NoteCutDirection dir)
         {
 
             /*if (dotRenderer != null) {
@@ -63,14 +63,14 @@ namespace NightmareStandalone.Extensions
             {
                 cnv.SetDotVisible(dotRenderer, false);
                 cnv.SetArrowVisible(true);
-                cnv.SetSecondArrowVisible(true, color);
+                cnv.SetSecondArrowVisible(dir != NoteCutDirection.Any, color);
             }
             else
             {
                 cnv.SetSecondArrowVisible(false, color);
             }
 
-            dotRenderer.transform.localScale = type == CNVDisplayType.DEFLECT ? deflectScale : defaultScale;
+            //dotRenderer.transform.localScale = type == CNVDisplayType.DEFLECT ? deflectScale : defaultScale;
 
             if (type == CNVDisplayType.NORMAL)
             {
@@ -85,7 +85,7 @@ namespace NightmareStandalone.Extensions
         }
 
 
-        private static Dictionary<ColorNoteVisuals, Tuple<MeshRenderer, SpriteRenderer>> secondArrows = new Dictionary<ColorNoteVisuals, Tuple<MeshRenderer, SpriteRenderer>>();
+        private static Dictionary<ColorNoteVisuals, MeshRenderer[]> secondArrows = new Dictionary<ColorNoteVisuals, MeshRenderer[]>();
 
         private static void SetupDeflectSprite()
         {
@@ -100,11 +100,11 @@ namespace NightmareStandalone.Extensions
         {
             if (secondArrows.ContainsKey(cnv))
             {
-                Tuple<MeshRenderer, SpriteRenderer> t;
+                MeshRenderer[] t;
                 if (secondArrows.TryGetValue(cnv, out t))
                 {
-                    t.Item1.enabled = false;
-                    t.Item2.enabled = false;
+                    foreach (var renderer in t)
+                        renderer.enabled = false;
                 }
             }
         }
@@ -232,57 +232,65 @@ namespace NightmareStandalone.Extensions
 
         private static void EnableSecondArrow(this ColorNoteVisuals cnv, Color color)
         {
-            Tuple<MeshRenderer, SpriteRenderer> t;
+            MeshRenderer[] t;
             if (secondArrows.ContainsKey(cnv))
             {
                 if (secondArrows.TryGetValue(cnv, out t))
                 {
-                    t.Item1.enabled = true;
-                    t.Item2.enabled = false; // TODO re-enable this after fixing brightness
-                    t.Item2.color = color;
+                    foreach(var item in t)
+                    {
+                        item.enabled = true;
+                        //glowsprite.enabled = false; // TODO re-enable this after fixing brightness
+                        //glowsprite.color = color;
+                    }
                     return;
                 }
             }
-            MeshRenderer omr = cnv.GetField<MeshRenderer, ColorNoteVisuals>("_arrowMeshRenderer");
-            SpriteRenderer osr = cnv.GetField<SpriteRenderer, ColorNoteVisuals>("_arrowGlowSpriteRenderer");
+            MeshRenderer[] omr = cnv.GetField<MeshRenderer[], ColorNoteVisuals>("_arrowMeshRenderers");
+            //SpriteRenderer[] osr = cnv.GetField<SpriteRenderer, ColorNoteVisuals>("_arrowGlowSpriteRenderer");
+            List<MeshRenderer> flipped = new List<MeshRenderer>();
+            foreach(var renderer in omr)
+            {
+                Transform flipper = new GameObject("Reverse Arrow Parent").transform;
+                flipper.SetParent(renderer.transform.parent);
+                flipper.localPosition = Vector3.zero; flipper.localRotation = Quaternion.identity;
 
-            Transform flipper = new GameObject("Reverse Arrow Parent").transform;
-            flipper.SetParent(omr.transform.parent);
-            flipper.localPosition = Vector3.zero; flipper.localRotation = Quaternion.identity;
+                GameObject mrObj = GameObject.Instantiate(renderer.gameObject);
+                //mrObj.transform.SetParent(omr.transform.parent);
+                //mrObj.transform.position = omr.transform.position; mrObj.transform.rotation = omr.transform.rotation;
+                MeshRenderer mr = mrObj.GetComponent<MeshRenderer>();
 
-            GameObject mrObj = GameObject.Instantiate(omr.gameObject);
-            //mrObj.transform.SetParent(omr.transform.parent);
-            //mrObj.transform.position = omr.transform.position; mrObj.transform.rotation = omr.transform.rotation;
-            MeshRenderer mr = mrObj.GetComponent<MeshRenderer>();
+                //GameObject srObj = GameObject.Instantiate(osr.gameObject);
+                ////srObj.transform.SetParent(osr.transform.parent);
+                ////srObj.transform.position = osr.transform.position; srObj.transform.rotation = osr.transform.rotation;
+                //SpriteRenderer sr = srObj.GetComponent<SpriteRenderer>();
 
-            GameObject srObj = GameObject.Instantiate(osr.gameObject);
-            //srObj.transform.SetParent(osr.transform.parent);
-            //srObj.transform.position = osr.transform.position; srObj.transform.rotation = osr.transform.rotation;
-            SpriteRenderer sr = srObj.GetComponent<SpriteRenderer>();
+                mrObj.transform.SetParent(flipper);
+                mrObj.transform.localPosition = renderer.transform.localPosition; mrObj.transform.localRotation = renderer.transform.localRotation;
+                //srObj.transform.SetParent(flipper);
+                //srObj.transform.localPosition = osr.transform.localPosition; srObj.transform.localRotation = osr.transform.localRotation;
 
-            mrObj.transform.SetParent(flipper);
-            mrObj.transform.localPosition = omr.transform.localPosition; mrObj.transform.localRotation = omr.transform.localRotation;
-            srObj.transform.SetParent(flipper);
-            srObj.transform.localPosition = osr.transform.localPosition; srObj.transform.localRotation = osr.transform.localRotation;
+                flipper.localRotation = Quaternion.Euler(new Vector3(0, 0, 180));
 
-            flipper.localRotation = Quaternion.Euler(new Vector3(0, 0, 180));
+                //mrObj.transform.localPosition = new Vector3(mr.transform.localPosition.x, -mr.transform.localPosition.y, mr.transform.localPosition.z);// mrObj.transform.localPosition + Vector3.up;
+                //srObj.transform.localPosition = new Vector3(sr.transform.localPosition.x, -sr.transform.localPosition.y, sr.transform.localPosition.z);// srObj.transform.localPosition + Vector3.up;
 
-            //mrObj.transform.localPosition = new Vector3(mr.transform.localPosition.x, -mr.transform.localPosition.y, mr.transform.localPosition.z);// mrObj.transform.localPosition + Vector3.up;
-            //srObj.transform.localPosition = new Vector3(sr.transform.localPosition.x, -sr.transform.localPosition.y, sr.transform.localPosition.z);// srObj.transform.localPosition + Vector3.up;
+                //sr.flipY = true;
 
-            //sr.flipY = true;
+                //mrObj.transform.localRotation = Quaternion.Euler(omr.transform.localRotation.eulerAngles + new Vector3(0, 180, 0));
+                //srObj.transform.localRotation = Quaternion.Euler(osr.transform.localRotation.eulerAngles + new Vector3(0, 180, 0));
 
-            //mrObj.transform.localRotation = Quaternion.Euler(omr.transform.localRotation.eulerAngles + new Vector3(0, 180, 0));
-            //srObj.transform.localRotation = Quaternion.Euler(osr.transform.localRotation.eulerAngles + new Vector3(0, 180, 0));
+                //t = new Tuple<MeshRenderer, SpriteRenderer>(mr, sr);
+                //t.Item1.enabled = true;
+                //t.Item2.enabled = false; // TODO re-enable this after fixing brightness
+                //t.Item2.color = color;
 
-            t = new Tuple<MeshRenderer, SpriteRenderer>(mr, sr);
-            t.Item1.enabled = true;
-            t.Item2.enabled = false; // TODO re-enable this after fixing brightness
-            t.Item2.color = color;
+                mr.enabled = true;
+                flipper.localScale = renderer.transform.localScale;
+                flipped.Add(mr);
+            }
 
-            flipper.localScale = omr.transform.localScale;
-
-            secondArrows.Add(cnv, t);
+            secondArrows.Add(cnv, flipped.ToArray());
         }
 
 
