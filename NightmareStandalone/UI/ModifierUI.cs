@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using BeatSaberMarkupLanguage;
 using BeatSaberMarkupLanguage.Components;
 using BeatSaberMarkupLanguage.Attributes;
+using BeatSaberMarkupLanguage.Util;
+
 namespace NightmareStandalone.UI
 {
     public class ModifierUI : NotifiableSingleton<ModifierUI>

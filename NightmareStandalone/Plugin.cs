@@ -65,7 +65,7 @@ namespace NightmareStandalone
             if (callbackController == null) Debug.Log("null callback");
 
             var customData = Extensions.MapModifier.CreateTransformedBeatmapData(thedata,
-                BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings, GameMode.BaseGameModeType.SoloStandard, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.difficultyBeatmap.level.beatsPerMinute);
+                BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.playerSpecificSettings, GameMode.BaseGameModeType.SoloStandard, BS_Utils.Plugin.LevelData.GameplayCoreSceneSetupData.beatmapLevel.beatsPerMinute);
             if (customData != null)
             {
                 callbackController.ReplaceData(customData as BeatmapData);
