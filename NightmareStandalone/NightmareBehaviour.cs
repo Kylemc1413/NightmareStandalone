@@ -101,7 +101,7 @@ namespace NightmareStandalone
             objectManager.noteWasCutEvent += NightmareNoteWasCutEvent;
             objectManager.noteWasMissedEvent += NightmareNoteWasMissedEvent;
             HarmonyPatches.NoteScaling.HandleNoteScalingEvent += NightmareNoteScalingEvent;
-            //    objectManager.obstacleDidPassThreeQuartersOfMove2Event += NightmareBarrierSpawnedEvent;
+            objectManager.obstacleWasSpawnedEvent += NightmareBarrierSpawnedEvent;
 
             ResetNightmare();
         }
@@ -147,10 +147,10 @@ namespace NightmareStandalone
         }
 
 
-        public void NightmareBarrierSpawnedEvent(ref StretchableObstacle stretchableObstacle, ref BeatmapObjectManager obstacleSpawnController, ref ObstacleController obstacleController, ref bool didRecolour)
+        public void NightmareBarrierSpawnedEvent(ObstacleController obstacleController)
         {
-            didRecolour = true;
-            ReflectionUtil.GetField<StretchableCube, StretchableObstacle>(stretchableObstacle, "_stretchableCore").gameObject.SetActive(false);
+            var stretchableObstacle = obstacleController.GetField<StretchableObstacle, ObstacleController>("_stretchableObstacle");
+            ReflectionUtil.GetField<Transform, StretchableObstacle>(stretchableObstacle, "_obstacleCore").localScale = Vector3.zero;//.SetActive(false);
         }
 
         public void NightmareNoteWasCutEvent(NoteController noteController, in NoteCutInfo noteCutInfo)
